@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Word Popper</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="page">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Speed type challenge</p>
+        <h1>Word Popper</h1>
+        <p class="lede">Type words to pop them before the minute runs out. A new word drifts in every second.</p>
+        <button id="start-btn" class="primary">Start</button>
+      </div>
+      <div class="panel stats">
+        <div class="stat">
+          <span class="label">Score</span>
+          <span class="value" id="score">0</span>
+        </div>
+        <div class="stat">
+          <span class="label">Time</span>
+          <span class="value" id="timer">60s</span>
+        </div>
+        <div class="stat">
+          <span class="label">Active</span>
+          <span class="value" id="active-count">0</span>
+        </div>
+      </div>
+    </header>
+
+    <section class="panel game-shell">
+      <div class="game-controls">
+        <form id="entry-form" autocomplete="off">
+          <input id="word-input" name="word" placeholder="Type a word and hit Enter" spellcheck="false" autocomplete="off" />
+          <button type="submit" class="secondary">Pop</button>
+        </form>
+        <div class="hint">Words bounce around like the old DVD logo. Pop as many as you can in 60 seconds.</div>
+      </div>
+      <div id="playfield" class="playfield" aria-live="polite"></div>
+      <div id="overlay" class="overlay hidden">
+        <div class="overlay-card">
+          <p id="overlay-title" class="overlay-title"></p>
+          <p id="overlay-detail" class="overlay-detail"></p>
+          <button id="restart-btn" class="primary ghost">Play again</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
