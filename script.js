@@ -1,5 +1,7 @@
 const playfield = document.getElementById('playfield');
+const frame = document.getElementById('frame');
 const startBtn = document.getElementById('start-btn');
+const stopBtn = document.getElementById('stop-btn');
 const restartBtn = document.getElementById('restart-btn');
 const scoreEl = document.getElementById('score');
 const timerEl = document.getElementById('timer');
@@ -9,6 +11,10 @@ const input = document.getElementById('word-input');
 const overlay = document.getElementById('overlay');
 const overlayTitle = document.getElementById('overlay-title');
 const overlayDetail = document.getElementById('overlay-detail');
+const pinToggles = document.querySelectorAll('.pin-toggle input');
+const heroBox = document.querySelector('.hero');
+const statsBox = document.querySelector('.stats');
+const controlsBox = document.querySelector('.game-controls');
 
 const WORDS = [
   'orbit', 'pulse', 'flash', 'matrix', 'echo', 'slide', 'glow', 'spark', 'trace', 'drift',
@@ -30,6 +36,7 @@ const state = {
   score: 0,
   nextId: 0,
   lastTick: 0,
+  floaters: [],
 };
 
 function pickWord() {
@@ -74,11 +81,13 @@ function updateWordPosition(word) {
 }
 
 function tick(now) {
-  if (!state.running) return;
   const delta = (now - state.lastTick) / 1000 || 0;
   state.lastTick = now;
 
-  const bounds = playfield.getBoundingClientRect();
+  updateFloaters(delta);
+
+  if (state.running) {
+    const bounds = playfield.getBoundingClientRect();
   for (const word of state.words) {
     if (word.popped) continue;
     word.x += word.vx * delta;
@@ -86,22 +95,24 @@ function tick(now) {
 
     if (word.x <= 0) {
       word.x = 0;
-      word.vx *= -1;
+      word.vx = Math.abs(word.vx);
     } else if (word.x + word.w >= bounds.width) {
       word.x = bounds.width - word.w;
-      word.vx *= -1;
+      word.vx = -Math.abs(word.vx);
     }
 
     if (word.y <= 0) {
       word.y = 0;
-      word.vy *= -1;
+      word.vy = Math.abs(word.vy);
     } else if (word.y + word.h >= bounds.height) {
       word.y = bounds.height - word.h;
-      word.vy *= -1;
+      word.vy = -Math.abs(word.vy);
     }
 
     updateWordPosition(word);
   }
+  }
+
   requestAnimationFrame(tick);
 }
 
@@ -153,6 +164,12 @@ function startGame() {
   requestAnimationFrame(tick);
 }
 
+function stopGame() {
+  resetGame();
+  startBtn.disabled = false;
+  overlay.classList.add('hidden');
+}
+
 function endGame() {
   state.running = false;
   clearInterval(state.spawnTimer);
@@ -181,6 +198,7 @@ function renderCounts() {
 }
 
 startBtn.addEventListener('click', startGame);
+stopBtn.addEventListener('click', stopGame);
 restartBtn.addEventListener('click', startGame);
 
 form.addEventListener('submit', (e) => {
@@ -202,4 +220,109 @@ window.addEventListener('resize', () => {
     word.y = Math.min(word.y, Math.max(0, bounds.height - word.h));
     updateWordPosition(word);
   }
+
+  const vw = frame.clientWidth;
+  const vh = frame.clientHeight;
+  for (const floater of state.floaters) {
+    const rect = floater.el.getBoundingClientRect();
+    floater.w = rect.width;
+    floater.h = rect.height;
+    floater.x = Math.min(floater.x, Math.max(0, vw - floater.w));
+    floater.y = Math.min(floater.y, Math.max(0, vh - floater.h));
+    floater.el.style.transform = `translate(${floater.x}px, ${floater.y}px)`;
+  }
 });
+
+function initFloaters() {
+  const frameRect = frame.getBoundingClientRect();
+  const innerW = frame.clientWidth;
+  const innerH = frame.clientHeight;
+  const entries = [
+    { key: 'hero', el: heroBox, anchor: () => ({ x: 20, y: 20 }) },
+    {
+      key: 'stats',
+      el: statsBox,
+      anchor: () => {
+        const rect = statsBox.getBoundingClientRect();
+        return { x: innerW - rect.width - 20, y: 20 };
+      },
+    },
+    {
+      key: 'controls',
+      el: controlsBox,
+      anchor: () => {
+        const rect = controlsBox.getBoundingClientRect();
+        return { x: (innerW - rect.width) / 2, y: innerH - rect.height - 20 };
+      },
+    },
+  ];
+
+  state.floaters = entries.map(entry => {
+    const rect = entry.el.getBoundingClientRect();
+    const { x, y } = entry.anchor();
+    const { vx, vy } = randomVelocity();
+    return {
+      key: entry.key,
+      el: entry.el,
+      x,
+      y,
+      w: rect.width,
+      h: rect.height,
+      vx,
+      vy,
+      pinned: false,
+    };
+  });
+
+  for (const floater of state.floaters) {
+    floater.el.style.transform = `translate(${floater.x}px, ${floater.y}px)`;
+  }
+}
+
+function updateFloaters(delta) {
+  const bounds = { w: frame.clientWidth, h: frame.clientHeight };
+  for (const floater of state.floaters) {
+    if (floater.pinned) continue;
+    const rect = floater.el.getBoundingClientRect();
+    floater.w = rect.width;
+    floater.h = rect.height;
+
+    floater.x += floater.vx * delta;
+    floater.y += floater.vy * delta;
+
+    if (floater.x <= 0) {
+      floater.x = 0;
+      floater.vx = Math.abs(floater.vx);
+    } else if (floater.x + floater.w >= bounds.w) {
+      floater.x = bounds.w - floater.w;
+      floater.vx = -Math.abs(floater.vx);
+    }
+
+    if (floater.y <= 0) {
+      floater.y = 0;
+      floater.vy = Math.abs(floater.vy);
+    } else if (floater.y + floater.h >= bounds.h) {
+      floater.y = bounds.h - floater.h;
+      floater.vy = -Math.abs(floater.vy);
+    }
+
+    floater.x = Math.min(floater.x, Math.max(0, bounds.w - floater.w));
+    floater.y = Math.min(floater.y, Math.max(0, bounds.h - floater.h));
+
+    floater.el.style.transform = `translate(${floater.x}px, ${floater.y}px)`;
+  }
+}
+
+pinToggles.forEach(toggle => {
+  toggle.addEventListener('change', () => {
+    const key = toggle.dataset.floater;
+    const floater = state.floaters.find(f => f.key === key);
+    if (floater) {
+      floater.pinned = toggle.checked;
+    }
+  });
+});
+
+initFloaters();
+state.lastTick = performance.now();
+requestAnimationFrame(tick);
