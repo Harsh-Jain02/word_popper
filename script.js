@@ -4,6 +4,8 @@ const startBtn = document.getElementById('start-btn');
 const stopBtn = document.getElementById('stop-btn');
 const restartBtn = document.getElementById('restart-btn');
 const scoreEl = document.getElementById('score');
+const poppedEl = document.getElementById('popped-count');
+const streakEl = document.getElementById('streak');
 const timerEl = document.getElementById('timer');
 const activeCountEl = document.getElementById('active-count');
 const form = document.getElementById('entry-form');
@@ -12,6 +14,7 @@ const overlay = document.getElementById('overlay');
 const overlayTitle = document.getElementById('overlay-title');
 const overlayDetail = document.getElementById('overlay-detail');
 const pinToggles = document.querySelectorAll('.pin-toggle input');
+const themeButtons = document.querySelectorAll('[data-theme]');
 const heroBox = document.querySelector('.hero');
 const statsBox = document.querySelector('.stats');
 const controlsBox = document.querySelector('.game-controls');
@@ -35,9 +38,13 @@ const state = {
   countdownTimer: null,
   timeLeft: 60,
   score: 0,
+  popped: 0,
+  streak: 0,
+  bestStreak: 0,
   nextId: 0,
   lastTick: 0,
   floaters: [],
+  theme: 'dark',
 };
 
 function pickWord() {
@@ -55,7 +62,10 @@ function randomVelocity() {
 
 function spawnWord() {
   if (!state.running) return;
-  const word = pickWord();
+  const activeTexts = new Set(state.words.map(w => w.text.toLowerCase()));
+  const available = WORDS.filter(w => !activeTexts.has(w.toLowerCase()));
+  if (!available.length) return;
+  const word = available[Math.floor(Math.random() * available.length)];
   const el = document.createElement('span');
   el.className = 'word spawn';
   el.textContent = word;
@@ -121,7 +131,11 @@ function popWord(word) {
   if (!word || word.popped) return;
   word.popped = true;
   word.el.classList.add('popping');
-  state.score += 1;
+  const gain = word.text.length;
+  state.score += gain;
+  state.popped += 1;
+  state.streak += 1;
+  state.bestStreak = Math.max(state.bestStreak, state.streak);
   renderCounts();
   word.el.addEventListener('animationend', () => {
     word.el.remove();
@@ -136,6 +150,9 @@ function handleInput(value) {
   if (match) {
     popWord(match);
   } else {
+    state.score -= target.length;
+    state.streak = 0;
+    renderCounts();
     input.classList.add('shake');
     setTimeout(() => input.classList.remove('shake'), 180);
   }
@@ -177,7 +194,7 @@ function endGame() {
   clearInterval(state.countdownTimer);
   startBtn.disabled = false;
   overlayTitle.textContent = 'Time!';
-  overlayDetail.textContent = `You popped ${state.score} word${state.score === 1 ? '' : 's'}.`;
+  overlayDetail.textContent = `Words: ${state.popped} | Score: ${state.score} | Best streak: ${state.bestStreak}`;
   overlay.classList.remove('hidden');
 }
 
@@ -186,6 +203,9 @@ function resetGame() {
   clearInterval(state.spawnTimer);
   clearInterval(state.countdownTimer);
   state.score = 0;
+  state.popped = 0;
+  state.streak = 0;
+  state.bestStreak = 0;
   state.timeLeft = 60;
   state.words.forEach(w => w.el.remove());
   state.words = [];
@@ -194,6 +214,8 @@ function resetGame() {
 
 function renderCounts() {
   scoreEl.textContent = state.score;
+  poppedEl.textContent = state.popped;
+  streakEl.textContent = state.streak;
   timerEl.textContent = `${state.timeLeft}s`;
   activeCountEl.textContent = state.words.length;
 }
@@ -233,6 +255,18 @@ window.addEventListener('resize', () => {
     floater.el.style.transform = `translate(${floater.x}px, ${floater.y}px)`;
   }
 });
+
+function applyTheme(theme) {
+  const themes = ['dark', 'light', 'neon', 'crt'];
+  themes.forEach(t => document.body.classList.remove(`theme-${t}`));
+  if (themes.includes(theme)) {
+    document.body.classList.add(`theme-${theme}`);
+    state.theme = theme;
+  }
+  themeButtons.forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.theme === theme);
+  });
+}
 
 function initFloaters() {
   const frameRect = frame.getBoundingClientRect();
@@ -324,6 +358,13 @@ pinToggles.forEach(toggle => {
   });
 });
 
+themeButtons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    applyTheme(btn.dataset.theme);
+  });
+});
+
 initFloaters();
+applyTheme(state.theme);
 state.lastTick = performance.now();
 requestAnimationFrame(tick);

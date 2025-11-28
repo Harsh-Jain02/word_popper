@@ -18,6 +18,15 @@
             <button id="start-btn" class="primary" type="button">Start</button>
             <button id="stop-btn" class="secondary ghost" type="button">Stop</button>
           </div>
+          <div class="theme-picker">
+            <span class="label">Theme</span>
+            <div class="theme-buttons">
+              <button type="button" class="chip" data-theme="dark">Dark</button>
+              <button type="button" class="chip" data-theme="light">Light</button>
+              <button type="button" class="chip" data-theme="neon">Neon</button>
+              <button type="button" class="chip" data-theme="crt">Retro CRT</button>
+            </div>
+          </div>
           <label class="pin-toggle">
             <input type="checkbox" data-floater="hero" />
             <span>Freeze title</span>
@@ -27,8 +36,16 @@
 
       <div class="panel stats">
         <div class="stat">
+          <span class="label">Words</span>
+          <span class="value" id="popped-count">0</span>
+        </div>
+        <div class="stat">
           <span class="label">Score</span>
           <span class="value" id="score">0</span>
+        </div>
+        <div class="stat">
+          <span class="label">Streak</span>
+          <span class="value" id="streak">0</span>
         </div>
         <div class="stat">
           <span class="label">Time</span>
