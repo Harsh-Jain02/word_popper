@@ -13,6 +13,8 @@ const input = document.getElementById('word-input');
 const overlay = document.getElementById('overlay');
 const overlayTitle = document.getElementById('overlay-title');
 const overlayDetail = document.getElementById('overlay-detail');
+const introOverlay = document.getElementById('intro-overlay');
+const introClose = document.getElementById('intro-close');
 const pinToggles = document.querySelectorAll('.pin-toggle input');
 const themeButtons = document.querySelectorAll('[data-theme]');
 const heroBox = document.querySelector('.hero');
@@ -161,6 +163,7 @@ function handleInput(value) {
 
 function startGame() {
   if (state.running) return;
+  hideIntro();
   resetGame();
   state.running = true;
   state.timeLeft = 60;
@@ -368,3 +371,13 @@ initFloaters();
 applyTheme(state.theme);
 state.lastTick = performance.now();
 requestAnimationFrame(tick);
+
+function hideIntro() {
+  if (introOverlay) {
+    introOverlay.classList.add('hidden');
+  }
+}
+
+if (introClose) {
+  introClose.addEventListener('click', hideIntro);
+}

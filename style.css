@@ -407,6 +407,11 @@ button:hover {
   z-index: 4;
 }
 
+.overlay.intro {
+  background: rgba(5, 8, 22, 0.7);
+  z-index: 6;
+}
+
 .overlay.hidden {
   display: none;
 }
@@ -430,4 +435,13 @@ button:hover {
 .overlay-detail {
   margin: 0 0 14px;
   color: rgba(255, 255, 255, 0.75);
+}
+
+.overlay-list {
+  text-align: left;
+  color: rgba(255, 255, 255, 0.85);
+  padding-left: 18px;
+  margin: 0 0 16px;
+  line-height: 1.5;
+  font-size: 14px;
 }
