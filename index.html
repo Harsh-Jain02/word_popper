@@ -61,6 +61,10 @@
         </label>
       </div>
 
+      <div class="panel rotate-panel">
+        <button id="rotate-btn" class="chip chip-lg" type="button">Allow rotation</button>
+      </div>
+
       <section class="panel game-shell">
         <div class="game-controls">
           <div class="controls-row">
@@ -89,8 +93,10 @@
             <ul class="overlay-list">
               <li>Press Start. A new word bounces in every second.</li>
               <li>Type a word and hit Enter/Pop to pop it.</li>
-              <li>Score = word length; wrong entry subtracts what you typed.</li>
-              <li>Keep your streak going for a higher best streak.</li>
+              <li>Score = word length; wrong entry subtracts the characters you typed.</li>
+              <li>Streak counts consecutive correct pops; track Words/Score/Streak in the stats bubble.</li>
+              <li>Toggle “Allow rotation” to spin bouncing items 90° on each wall hit.</li>
+              <li>Pick a theme (Dark, Light, Neon, Retro CRT) anytime.</li>
             </ul>
             <button id="intro-close" class="primary" type="button">Got it</button>
           </div>

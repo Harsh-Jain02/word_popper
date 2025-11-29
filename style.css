@@ -154,11 +154,12 @@ h1 {
   left: 0;
   z-index: 3;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   padding: 16px;
   gap: 12px;
   background: var(--panel-alpha);
   backdrop-filter: blur(6px);
+  min-width: 360px;
 }
 
 .stat {
@@ -260,6 +261,17 @@ input:focus {
   justify-self: end;
 }
 
+.rotate-panel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 3;
+  padding: 12px 14px;
+  background: var(--panel-alpha);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+}
+
 .theme-picker {
   display: flex;
   flex-direction: column;
@@ -292,6 +304,12 @@ input:focus {
   color: white;
   border-color: transparent;
   box-shadow: 0 10px 30px color-mix(in srgb, var(--accent) 60%, transparent);
+}
+
+.chip-lg {
+  font-size: 15px;
+  padding: 10px 16px;
+  border-radius: 14px;
 }
 
 button {
@@ -424,7 +442,7 @@ button:hover {
   box-shadow: 0 18px 48px rgba(0, 0, 0, 0.35);
   border: 1px solid rgba(255, 255, 255, 0.06);
   text-align: center;
-  max-width: 320px;
+  width: min(540px, calc(100vw - 48px));
 }
 
 .overlay-title {

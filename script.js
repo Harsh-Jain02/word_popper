@@ -15,11 +15,13 @@ const overlayTitle = document.getElementById('overlay-title');
 const overlayDetail = document.getElementById('overlay-detail');
 const introOverlay = document.getElementById('intro-overlay');
 const introClose = document.getElementById('intro-close');
+const rotateBtn = document.getElementById('rotate-btn');
 const pinToggles = document.querySelectorAll('.pin-toggle input');
 const themeButtons = document.querySelectorAll('[data-theme]');
 const heroBox = document.querySelector('.hero');
 const statsBox = document.querySelector('.stats');
 const controlsBox = document.querySelector('.game-controls');
+const rotateBox = document.querySelector('.rotate-panel');
 
 const WORDS = [
   'orbit', 'pulse', 'flash', 'matrix', 'echo', 'slide', 'glow', 'spark', 'trace', 'drift',
@@ -47,6 +49,7 @@ const state = {
   lastTick: 0,
   floaters: [],
   theme: 'dark',
+  rotationEnabled: false,
 };
 
 function pickWord() {
@@ -83,21 +86,21 @@ function spawnWord() {
   const y = Math.random() * maxY;
   const { vx, vy } = randomVelocity();
 
-  state.words.push({ id, text: word, x, y, vx, vy, w: width, h: height, el, popped: false });
+  state.words.push({ id, text: word, x, y, vx, vy, w: width, h: height, el, popped: false, angle: 0, lastBounce: 0 });
   updateWordPosition(state.words[state.words.length - 1]);
   requestAnimationFrame(() => el.classList.remove('spawn'));
   renderCounts();
 }
 
 function updateWordPosition(word) {
-  word.el.style.transform = `translate(${word.x}px, ${word.y}px)`;
+  word.el.style.transform = `translate(${word.x}px, ${word.y}px) rotate(${word.angle}deg)`;
 }
 
 function tick(now) {
   const delta = (now - state.lastTick) / 1000 || 0;
   state.lastTick = now;
 
-  updateFloaters(delta);
+  updateFloaters(delta, now);
 
   if (state.running) {
     const bounds = playfield.getBoundingClientRect();
@@ -105,21 +108,34 @@ function tick(now) {
     if (word.popped) continue;
     word.x += word.vx * delta;
     word.y += word.vy * delta;
+    let bounced = false;
 
     if (word.x <= 0) {
       word.x = 0;
       word.vx = Math.abs(word.vx);
+      bounced = true;
     } else if (word.x + word.w >= bounds.width) {
       word.x = bounds.width - word.w;
       word.vx = -Math.abs(word.vx);
+      bounced = true;
     }
 
     if (word.y <= 0) {
       word.y = 0;
       word.vy = Math.abs(word.vy);
+      bounced = true;
     } else if (word.y + word.h >= bounds.height) {
       word.y = bounds.height - word.h;
       word.vy = -Math.abs(word.vy);
+      bounced = true;
+    }
+
+    if (state.rotationEnabled && bounced) {
+      const since = now - (word.lastBounce || 0);
+      if (since > 40) {
+        word.angle = (word.angle + 90) % 360;
+        word.lastBounce = now;
+      }
     }
 
     updateWordPosition(word);
@@ -295,6 +311,17 @@ function initFloaters() {
     },
   ];
 
+  if (rotateBox) {
+    entries.push({
+      key: 'rotate',
+      el: rotateBox,
+      anchor: () => {
+        const rect = rotateBox.getBoundingClientRect();
+        return { x: innerW - rect.width - 20, y: innerH / 2 - rect.height / 2 };
+      },
+    });
+  }
+
   state.floaters = entries.map(entry => {
     const rect = entry.el.getBoundingClientRect();
     const { x, y } = entry.anchor();
@@ -309,6 +336,8 @@ function initFloaters() {
       vx,
       vy,
       pinned: false,
+      angle: 0,
+      lastBounce: 0,
     };
   });
 
@@ -317,7 +346,7 @@ function initFloaters() {
   }
 }
 
-function updateFloaters(delta) {
+function updateFloaters(delta, now = performance.now()) {
   const bounds = { w: frame.clientWidth, h: frame.clientHeight };
   for (const floater of state.floaters) {
     if (floater.pinned) continue;
@@ -327,27 +356,40 @@ function updateFloaters(delta) {
 
     floater.x += floater.vx * delta;
     floater.y += floater.vy * delta;
+    let bounced = false;
 
     if (floater.x <= 0) {
       floater.x = 0;
       floater.vx = Math.abs(floater.vx);
+      bounced = true;
     } else if (floater.x + floater.w >= bounds.w) {
       floater.x = bounds.w - floater.w;
       floater.vx = -Math.abs(floater.vx);
+      bounced = true;
     }
 
     if (floater.y <= 0) {
       floater.y = 0;
       floater.vy = Math.abs(floater.vy);
+      bounced = true;
     } else if (floater.y + floater.h >= bounds.h) {
       floater.y = bounds.h - floater.h;
       floater.vy = -Math.abs(floater.vy);
+      bounced = true;
     }
 
     floater.x = Math.min(floater.x, Math.max(0, bounds.w - floater.w));
     floater.y = Math.min(floater.y, Math.max(0, bounds.h - floater.h));
 
-    floater.el.style.transform = `translate(${floater.x}px, ${floater.y}px)`;
+    if (state.rotationEnabled && bounced) {
+      const since = now - (floater.lastBounce || 0);
+      if (since > 40) {
+        floater.angle = (floater.angle + 90) % 360;
+        floater.lastBounce = now;
+      }
+    }
+
+    floater.el.style.transform = `translate(${floater.x}px, ${floater.y}px) rotate(${floater.angle}deg)`;
   }
 }
 
@@ -366,6 +408,15 @@ themeButtons.forEach(btn => {
     applyTheme(btn.dataset.theme);
   });
 });
+
+if (rotateBtn) {
+  rotateBtn.addEventListener('click', () => {
+    state.rotationEnabled = !state.rotationEnabled;
+    rotateBtn.classList.toggle('active', state.rotationEnabled);
+    rotateBtn.textContent = state.rotationEnabled ? 'Rotation: on' : 'Allow rotation';
+    rotateBtn.setAttribute('aria-pressed', state.rotationEnabled ? 'true' : 'false');
+  });
+}
 
 initFloaters();
 applyTheme(state.theme);
