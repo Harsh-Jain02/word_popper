@@ -4,7 +4,7 @@
   --page-bg: radial-gradient(120% 120% at 20% 20%, #0b1220 0%, #0f172a 45%, #0b1220 100%);
   --frame-bg: #0f172a;
   --panel: #101827;
-  --panel-alpha: rgba(16, 24, 39, 0.85);
+  --panel-alpha: rgba(16, 24, 39, 0.18);
   --ink: #e5e7eb;
   --muted: #9ca3af;
   --accent: #38bdf8;
@@ -21,7 +21,7 @@ body.theme-light {
   --page-bg: radial-gradient(120% 120% at 20% 20%, #f9fafb 0%, #eef2ff 50%, #f8fafc 100%);
   --frame-bg: #f8fafc;
   --panel: #ffffff;
-  --panel-alpha: rgba(255, 255, 255, 0.9);
+  --panel-alpha: rgba(255, 255, 255, 0.35);
   --ink: #0f172a;
   --muted: #4b5563;
   --accent: #2563eb;
@@ -37,7 +37,7 @@ body.theme-neon {
   --page-bg: radial-gradient(120% 120% at 20% 20%, #0b0f1f 0%, #0a012a 40%, #0a0c1f 100%);
   --frame-bg: #050816;
   --panel: #0e1029;
-  --panel-alpha: rgba(14, 16, 41, 0.88);
+  --panel-alpha: rgba(14, 16, 41, 0.16);
   --ink: #e0e7ff;
   --muted: #9ca3af;
   --accent: #22d3ee;
@@ -53,7 +53,7 @@ body.theme-crt {
   --page-bg: radial-gradient(120% 120% at 50% 20%, #03100a 0%, #041b11 50%, #03100a 100%);
   --frame-bg: #041b11;
   --panel: #062016;
-  --panel-alpha: rgba(6, 32, 22, 0.88);
+  --panel-alpha: rgba(6, 32, 22, 0.16);
   --ink: #c8facc;
   --muted: #7fb48b;
   --accent: #34d399;
@@ -107,6 +107,7 @@ body {
   backdrop-filter: blur(6px);
   background: var(--panel-alpha);
   border: 1px solid var(--border);
+  transition: transform 120ms ease-out;
 }
 
 @media (max-width: 600px) {
@@ -160,6 +161,7 @@ h1 {
   background: var(--panel-alpha);
   backdrop-filter: blur(6px);
   min-width: 360px;
+  transition: transform 120ms ease-out;
 }
 
 .stat {
@@ -199,6 +201,7 @@ h1 {
   backdrop-filter: blur(6px);
   z-index: 3;
   min-width: min(560px, 90vw);
+  transition: transform 120ms ease-out;
 }
 
 #entry-form {
@@ -270,6 +273,7 @@ input:focus {
   background: var(--panel-alpha);
   border: 1px solid var(--border);
   border-radius: 16px;
+  transition: transform 120ms ease-out;
 }
 
 .theme-picker {
@@ -371,6 +375,7 @@ button:hover {
   border: 1px solid var(--border);
   transform: translate3d(0, 0, 0);
   will-change: transform;
+  transition: transform 120ms ease-out;
 }
 
 .word::after {
@@ -428,6 +433,11 @@ button:hover {
 .overlay.intro {
   background: rgba(5, 8, 22, 0.7);
   z-index: 6;
+}
+
+.overlay.mobile {
+  background: rgba(5, 8, 22, 0.82);
+  z-index: 7;
 }
 
 .overlay.hidden {

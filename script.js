@@ -16,6 +16,8 @@ const overlayDetail = document.getElementById('overlay-detail');
 const introOverlay = document.getElementById('intro-overlay');
 const introClose = document.getElementById('intro-close');
 const rotateBtn = document.getElementById('rotate-btn');
+const mobileOverlay = document.getElementById('mobile-overlay');
+const mobileContinue = document.getElementById('mobile-continue');
 const pinToggles = document.querySelectorAll('.pin-toggle input');
 const themeButtons = document.querySelectorAll('[data-theme]');
 const heroBox = document.querySelector('.hero');
@@ -50,6 +52,7 @@ const state = {
   floaters: [],
   theme: 'dark',
   rotationEnabled: false,
+  mobileDismissed: false,
 };
 
 function pickWord() {
@@ -100,7 +103,9 @@ function tick(now) {
   const delta = (now - state.lastTick) / 1000 || 0;
   state.lastTick = now;
 
-  updateFloaters(delta, now);
+  if (state.running) {
+    updateFloaters(delta, now);
+  }
 
   if (state.running) {
     const bounds = playfield.getBoundingClientRect();
@@ -266,13 +271,14 @@ window.addEventListener('resize', () => {
   const vw = frame.clientWidth;
   const vh = frame.clientHeight;
   for (const floater of state.floaters) {
-    const rect = floater.el.getBoundingClientRect();
-    floater.w = rect.width;
-    floater.h = rect.height;
+    floater.w = floater.el.offsetWidth;
+    floater.h = floater.el.offsetHeight;
     floater.x = Math.min(floater.x, Math.max(0, vw - floater.w));
     floater.y = Math.min(floater.y, Math.max(0, vh - floater.h));
     floater.el.style.transform = `translate(${floater.x}px, ${floater.y}px)`;
   }
+
+  checkMobileOverlay();
 });
 
 function applyTheme(theme) {
@@ -316,14 +322,14 @@ function initFloaters() {
       key: 'rotate',
       el: rotateBox,
       anchor: () => {
-        const rect = rotateBox.getBoundingClientRect();
+        const rect = { width: rotateBox.offsetWidth, height: rotateBox.offsetHeight };
         return { x: innerW - rect.width - 20, y: innerH / 2 - rect.height / 2 };
       },
     });
   }
 
   state.floaters = entries.map(entry => {
-    const rect = entry.el.getBoundingClientRect();
+    const rect = { width: entry.el.offsetWidth, height: entry.el.offsetHeight };
     const { x, y } = entry.anchor();
     const { vx, vy } = randomVelocity();
     return {
@@ -350,9 +356,8 @@ function updateFloaters(delta, now = performance.now()) {
   const bounds = { w: frame.clientWidth, h: frame.clientHeight };
   for (const floater of state.floaters) {
     if (floater.pinned) continue;
-    const rect = floater.el.getBoundingClientRect();
-    floater.w = rect.width;
-    floater.h = rect.height;
+    floater.w = floater.el.offsetWidth;
+    floater.h = floater.el.offsetHeight;
 
     floater.x += floater.vx * delta;
     floater.y += floater.vy * delta;
@@ -418,8 +423,26 @@ if (rotateBtn) {
   });
 }
 
+function checkMobileOverlay() {
+  if (!mobileOverlay || state.mobileDismissed) return;
+  const smallSide = Math.min(window.innerWidth, window.innerHeight);
+  if (smallSide < 720) {
+    mobileOverlay.classList.remove('hidden');
+  } else {
+    mobileOverlay.classList.add('hidden');
+  }
+}
+
+if (mobileContinue) {
+  mobileContinue.addEventListener('click', () => {
+    state.mobileDismissed = true;
+    mobileOverlay.classList.add('hidden');
+  });
+}
+
 initFloaters();
 applyTheme(state.theme);
+checkMobileOverlay();
 state.lastTick = performance.now();
 requestAnimationFrame(tick);
 
