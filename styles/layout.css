@@ -9,8 +9,7 @@
   z-index: 3;
   padding: 14px 16px;
   border-radius: 16px;
-  backdrop-filter: blur(6px);
-  background: var(--panel-alpha);
+  background: transparent;
   border: 1px solid var(--border);
   transition: transform 120ms ease-out;
 }
@@ -56,8 +55,8 @@ h1 {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   padding: 16px;
   gap: 12px;
-  background: var(--panel-alpha);
-  backdrop-filter: blur(6px);
+  background: transparent;
+  box-shadow: none;
   min-width: 360px;
   transition: transform 120ms ease-out;
 }
@@ -95,8 +94,7 @@ h1 {
   padding: 12px;
   border: 1px dashed var(--border);
   border-radius: 12px;
-  background: var(--panel-alpha);
-  backdrop-filter: blur(6px);
+  background: transparent;
   z-index: 3;
   min-width: min(560px, 90vw);
   transition: transform 120ms ease-out;
@@ -113,7 +111,8 @@ h1 {
   left: 0;
   z-index: 3;
   padding: 12px 14px;
-  background: var(--panel-alpha);
+  background: transparent;
+  box-shadow: none;
   border: 1px solid var(--border);
   border-radius: 16px;
   transition: transform 120ms ease-out;
