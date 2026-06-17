@@ -1,0 +1,28 @@
+(function registerWordBank(app) {
+  app.wordList = [
+    'able', 'acorn', 'agent', 'agile', 'alert', 'amber', 'anchor', 'angle', 'apple', 'arena',
+    'arrow', 'asset', 'atlas', 'aura', 'badge', 'baker', 'beacon', 'blade', 'blank', 'blast',
+    'blaze', 'blink', 'block', 'bloom', 'board', 'bold', 'boost', 'bounce', 'brave', 'brick',
+    'bright', 'brisk', 'brush', 'burst', 'cable', 'cabin', 'cadet', 'candy', 'canyon', 'cargo',
+    'cedar', 'chain', 'charm', 'chase', 'cinder', 'circuit', 'clash', 'clear', 'climb', 'clock',
+    'cloud', 'comet', 'coral', 'craft', 'crane', 'crisp', 'crown', 'cruise', 'crystal', 'dash',
+    'delta', 'dodge', 'drift', 'drill', 'drive', 'drone', 'dune', 'dynamo', 'echo', 'edge',
+    'ember', 'engine', 'epoch', 'expert', 'falcon', 'fancy', 'flare', 'flash', 'flashy', 'fleet',
+    'flick', 'fling', 'float', 'flow', 'focus', 'forge', 'frame', 'frost', 'galaxy', 'gauge',
+    'glide', 'glint', 'glow', 'glyph', 'grace', 'grid', 'groove', 'guard', 'harbor', 'hatch',
+    'hazel', 'hinge', 'hover', 'hustle', 'icon', 'ignite', 'image', 'impact', 'index', 'ivory',
+    'jacket', 'jazz', 'jolt', 'jump', 'kernel', 'kick', 'kite', 'laser', 'launch', 'layer',
+    'leaf', 'leap', 'legend', 'level', 'light', 'lively', 'loom', 'loop', 'lumen', 'lunar',
+    'magnet', 'matrix', 'meadow', 'merge', 'metro', 'mimic', 'mint', 'mirror', 'motion', 'navy',
+    'neon', 'nexus', 'nimble', 'nova', 'nudge', 'oasis', 'orbit', 'origin', 'opal', 'pace',
+    'panel', 'pearl', 'pilot', 'pioneer', 'pixel', 'planet', 'plaza', 'plume', 'point', 'polar',
+    'prime', 'prism', 'pulse', 'punch', 'punchy', 'quark', 'quest', 'quick', 'queue', 'quiver',
+    'radar', 'rally', 'rapid', 'raven', 'ready', 'relay', 'rider', 'ripple', 'river', 'rocket',
+    'rover', 'rush', 'saffron', 'scale', 'scout', 'shadow', 'shift', 'shine', 'silver', 'sketch',
+    'slide', 'snap', 'solar', 'sonic', 'spark', 'sparkle', 'spice', 'spire', 'sprint', 'stable',
+    'star', 'steel', 'storm', 'stream', 'stride', 'streak', 'summit', 'surge', 'swift', 'swirl',
+    'swoop', 'tempo', 'thrive', 'tile', 'tinker', 'trace', 'trail', 'tumble', 'turbo', 'twist',
+    'ultra', 'unit', 'valley', 'vault', 'vector', 'velvet', 'vivid', 'vortex', 'wave', 'whirl',
+    'whiz', 'window', 'wonder', 'xenon', 'yonder', 'zenith', 'zip', 'zippy',
+  ];
+})(window.WordPopper = window.WordPopper || {});

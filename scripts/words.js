@@ -1,8 +1,4 @@
 (function registerWords(app) {
-  function activeWordTexts() {
-    return new Set(app.state.words.map((word) => word.text.toLowerCase()));
-  }
-
   function clearWords() {
     app.state.words.forEach((word) => word.el.remove());
     app.state.words = [];
@@ -14,8 +10,7 @@
   }
 
   function pickAvailableWord() {
-    const activeTexts = activeWordTexts();
-    const available = app.wordList.filter((word) => !activeTexts.has(word.toLowerCase()));
+    const available = app.wordList.filter((word) => !app.state.usedWords.has(word.toLowerCase()));
 
     if (!available.length) {
       return null;
@@ -60,6 +55,7 @@
       return;
     }
 
+    app.state.usedWords.add(text.toLowerCase());
     const word = createWord(text);
     app.state.words.push(word);
     app.motion.updateTransform(word);

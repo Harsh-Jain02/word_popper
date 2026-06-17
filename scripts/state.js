@@ -15,6 +15,7 @@
     streak: 0,
     theme: 'dark',
     timeLeft: app.settings.gameSeconds,
+    usedWords: new Set(),
     words: [],
   };
 })(window.WordPopper = window.WordPopper || {});

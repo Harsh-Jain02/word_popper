@@ -48,6 +48,7 @@
     app.state.streak = 0;
     app.state.bestStreak = 0;
     app.state.timeLeft = app.settings.gameSeconds;
+    app.state.usedWords.clear();
     app.wordsEngine.clearWords();
     renderCounts();
   }

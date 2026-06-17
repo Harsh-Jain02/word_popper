@@ -30,13 +30,14 @@ No build step is required. The page loads plain HTML, CSS, and JavaScript files 
 |   |-- motion.js
 |   |-- state.js
 |   |-- ui.js
+|   |-- word-bank.js
 |   `-- words.js
 `-- ideas.txt
 ```
 
 ## JavaScript Files
 
-- `scripts/config.js` contains game settings, themes, and the word list.
+- `scripts/config.js` contains game settings and themes.
 - `scripts/dom.js` collects DOM references in one place.
 - `scripts/state.js` defines the shared runtime state.
 - `scripts/motion.js` contains shared movement, bouncing, clamping, and rotation helpers.
@@ -44,6 +45,7 @@ No build step is required. The page loads plain HTML, CSS, and JavaScript files 
 - `scripts/floaters.js` owns the moving UI panels.
 - `scripts/game.js` owns game flow, timers, scoring, and the animation loop.
 - `scripts/ui.js` wires buttons, form input, theme controls, overlays, and resize events.
+- `scripts/word-bank.js` contains the vocabulary used for spawned words.
 - `script.js` is the small bootstrap file that initializes the app.
 
 The files use a shared `window.WordPopper` namespace instead of ES modules so the game can run from a direct `index.html` file open without a local server.
@@ -60,7 +62,7 @@ The files use a shared `window.WordPopper` namespace instead of ES modules so th
 
 ## Maintenance Notes
 
-- Add new words in `scripts/config.js`.
+- Add new words in `scripts/word-bank.js`.
 - Tune timer and spawn speed in `scripts/config.js`.
 - Add feature ideas or backlog notes in `ideas.txt`.
 - Keep cross-cutting movement behavior in `scripts/motion.js` so words and floating panels stay consistent.
