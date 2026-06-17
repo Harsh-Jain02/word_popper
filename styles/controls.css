@@ -1,7 +1,7 @@
 #entry-form {
   display: grid;
   grid-template-columns: 1fr auto;
-  gap: 8px;
+  gap: 6px;
 }
 
 .controls-row {
@@ -10,8 +10,8 @@
 }
 
 input {
-  border-radius: 12px;
-  padding: 12px 14px;
+  border-radius: 10px;
+  padding: 9px 11px;
   border: 1px solid var(--border);
   font: inherit;
   outline: none;
@@ -35,16 +35,16 @@ input:focus {
 .pin-toggle {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  font-size: 13px;
+  gap: 6px;
+  font-size: 12px;
   color: var(--muted);
   user-select: none;
 }
 
 .pin-toggle input {
   accent-color: var(--accent-2);
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
   margin: 0;
 }
 
@@ -57,9 +57,9 @@ input:focus {
   border: 1px solid var(--border);
   background: transparent;
   color: var(--ink);
-  padding: 8px 12px;
+  padding: 6px 9px;
   border-radius: 999px;
-  font-size: 13px;
+  font-size: 12px;
   box-shadow: none;
 }
 
@@ -75,17 +75,17 @@ input:focus {
 }
 
 .chip-lg {
-  font-size: 15px;
-  padding: 10px 16px;
-  border-radius: 14px;
+  font-size: 13px;
+  padding: 8px 12px;
+  border-radius: 12px;
 }
 
 button {
   font: inherit;
   border: none;
   cursor: pointer;
-  border-radius: 12px;
-  padding: 12px 16px;
+  border-radius: 10px;
+  padding: 9px 12px;
   font-weight: 600;
   transition: transform 140ms ease, box-shadow 140ms ease, background 140ms ease;
 }

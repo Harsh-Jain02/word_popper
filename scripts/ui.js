@@ -44,8 +44,8 @@
       return;
     }
 
-    const smallSide = Math.min(window.innerWidth, window.innerHeight);
-    app.dom.mobileOverlay.classList.toggle('hidden', smallSide >= app.settings.mobileSmallSide);
+    const isNarrowViewport = window.innerWidth < app.settings.mobileWarningMaxWidth;
+    app.dom.mobileOverlay.classList.toggle('hidden', !isNarrowViewport);
   }
 
   function hideIntro() {
@@ -61,6 +61,8 @@
 
   function bindPinToggles() {
     app.dom.pinToggles.forEach((toggle) => {
+      toggle.checked = app.floatingPanels.isPinned(toggle.dataset.floater);
+
       toggle.addEventListener('change', () => {
         app.floatingPanels.setPinned(toggle.dataset.floater, toggle.checked);
       });

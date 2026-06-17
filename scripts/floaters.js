@@ -26,6 +26,11 @@
     }
   }
 
+  function isPinned(key) {
+    const floater = app.state.floaters.find((item) => item.key === key);
+    return Boolean(floater && floater.pinned);
+  }
+
   function update(delta, now) {
     const bounds = frameBounds();
 
@@ -50,7 +55,7 @@
       h: entry.el.offsetHeight,
       key: entry.key,
       lastBounce: 0,
-      pinned: false,
+      pinned: app.defaultPinnedFloaters.includes(entry.key),
       vx,
       vy,
       w: entry.el.offsetWidth,
@@ -98,6 +103,7 @@
 
   app.floatingPanels = {
     init,
+    isPinned,
     resize,
     setPinned,
     update,
